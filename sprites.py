@@ -48,12 +48,19 @@ class Player(pg.sprite.Sprite):
         self.jumping_frame = self.game.spritesheet.get_image(382, 763, 150, 181)
         self.jumping_frame.set_colorkey(BLACK)
 
+    def jump_cut(self):
+        if self.jumping:
+            if self.vel.y < -10:
+                self.vel.y = -10
+
 
     def jump(self):
-        self.rect.y += 1
+        self.rect.y += 2
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
-        self.rect.y -= 1
-        if hits:
+        self.rect.y -= 2
+        if hits and not self.jumping:
+            self.game.jump_sound.play()
+            self.jumping = True
             self.vel.y = -PLAYER_JUMP
 
 
@@ -94,7 +101,7 @@ class Player(pg.sprite.Sprite):
             self.walking = False
 
         if self.walking:
-            if now - self.last_update > 200:
+            if now - self.last_update > 100:
                 self.last_update = now
                 self.current_frame = (self.current_frame + 1) % len(self.walking_frames_l)
                 bottom = self.rect.bottom
