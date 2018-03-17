@@ -29,11 +29,8 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         for plat in PLATFORM_LIST:
-            p =  Platform(self, *plat)
-            self.all_sprites.add(p)
-            self.platforms.add(p)
+            Platform(self, *plat)
         self.player = Player(self)
-        self.all_sprites.add(self.player)
         pg.mixer.music.load('sounds/happy.ogg')
         self.run()
 
@@ -60,26 +57,43 @@ class Game:
                 for hit in hits:
                     if hit.rect.bottom > lowest.rect.bottom:
                         lowest = hit
-                if self.player.pos.y < lowest.rect.centery:
-                    self.player.pos.y = lowest.rect.top
-                    self.player.vel.y = 0
-                    self.player.jumping = False
+                if self.player.pos.x < lowest.rect.right + 10 and \
+                   self.player.pos.x > lowest.rect.left - 10:
+                    if self.player.pos.y < lowest.rect.centery:
+                        self.player.pos.y = lowest.rect.top
+                        self.player.vel.y = 0
+                        self.player.jumping = False
 
         if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += max(abs(self.player.vel.y), 2)
             for plat in self.platforms:
                 plat.rect.y += max(abs(self.player.vel.y), 2)
-                if plat.rect.top >= HEIGHT:
+                if plat.rect.top >= HEIGHT + 100:
                     plat.kill()
-        if self.player.rect.y > HEIGHT:
+        # Extra logic for moving to the right 
+        if self.player.rect.right >= WIDTH * 0.75:
+            self.player.pos.x += -max(abs(self.player.vel.x), 2)
+            for plat in self.platforms:
+                plat.rect.x += -max(abs(self.player.vel.x), 2)
+        if self.player.rect.left <= WIDTH / 4:
+            self.player.pos.x += max(abs(self.player.vel.x), 2)
+            for plat in self.platforms:
+                plat.rect.x += max(abs(self.player.vel.x), 2)
+
+        # When the player goes 100 px down 
+        if self.player.rect.y > HEIGHT - 200:
+            self.player.rect.y += -max(abs(self.player.vel.y), 2) - 5
+            for plat in self.platforms:
+                plat.rect.y += -max(abs(self.player.vel.y), 2) - 5
+        # When the player dies
+        if self.player.rect.y > HEIGHT + 100:
             self.playing = False
 
-        while len(self.platforms) < 6:
-            width = random.randrange(50, 100)
-            p = Platform(self, random.randrange(0, WIDTH - width),
-                         random.randrange(-75, -30))
-            self.platforms.add(p)
-            self.all_sprites.add(p)
+        # Generate new platforms
+        while len(self.platforms) < 10:
+            Platform(self,
+                     random.randrange(-100, WIDTH + 100),
+                     random.randrange(-75, -30))
 
 
     def events(self):

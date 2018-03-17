@@ -1,8 +1,10 @@
 from random import choice
+from sys import stdout
 
 from settings import *
 import pygame as pg
 vec = pg.math.Vector2
+
 
 class Spritesheet:
     def __init__(self, filename):
@@ -18,7 +20,8 @@ class Spritesheet:
 class Player(pg.sprite.Sprite):
 
     def __init__(self, game):
-        pg.sprite.Sprite.__init__(self)
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.walking = False
         self.jumping = False
@@ -90,7 +93,16 @@ class Player(pg.sprite.Sprite):
 
         # apply the position
         self.rect.midbottom = self.pos
-        print(self.acc, self.vel, self.pos)
+        stdout.write("Acc X: %d%%, Acc Y: %d ||"
+                     "Vel X: %d%%, Vel Y: %d ||"
+                     "Pos X: %d%%, Pos Y: %d || \r" \
+                    % (int(self.acc.x),
+                                                       int(self.acc.y),
+                                                       int(self.vel.x),
+                                                       int(self.vel.y),
+                                                       int(self.pos.x),
+                                                       int(self.pos.y)))
+        stdout.flush()
 
 
     def animate(self):
@@ -128,7 +140,23 @@ class Player(pg.sprite.Sprite):
 class Platform(pg.sprite.Sprite):
 
     def __init__(self, game, x, y):
-        pg.sprite.Sprite.__init__(self)
+        self.groups = game.all_sprites, game.platforms
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        images = [self.game.spritesheet.get_image(0, 288, 380, 94),
+                  self.game.spritesheet.get_image(0, 384, 380, 94),
+                  self.game.spritesheet.get_image(213, 1662, 201, 100)]
+        self.image = choice(images)
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Power(pg.sprite.Sprite):
+
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.power
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         images = [self.game.spritesheet.get_image(0, 288, 380, 94),
                   self.game.spritesheet.get_image(0, 384, 380, 94),
