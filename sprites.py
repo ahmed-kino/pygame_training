@@ -93,16 +93,13 @@ class Player(pg.sprite.Sprite):
 
         # apply the position
         self.rect.midbottom = self.pos
-        stdout.write("Acc X: %d%%, Acc Y: %d ||"
-                     "Vel X: %d%%, Vel Y: %d ||"
-                     "Pos X: %d%%, Pos Y: %d || \r" \
-                    % (int(self.acc.x),
-                                                       int(self.acc.y),
-                                                       int(self.vel.x),
-                                                       int(self.vel.y),
-                                                       int(self.pos.x),
-                                                       int(self.pos.y)))
-        stdout.flush()
+        # stdout.write("Acc X: %d%%, Acc Y: %d ||"
+        #              "Vel X: %d%%, Vel Y: %d ||"
+        #              "Pos X: %d%%, Pos Y: %d || \r" \
+        #              % (int(self.acc.x), int(self.acc.y),
+        #                 int(self.vel.x), int(self.vel.y),
+        #                 int(self.pos.x), int(self.pos.y)))
+        # stdout.flush()
 
 
     def animate(self):
