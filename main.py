@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import sys
 import pygame as pg
 from pygame.locals import *
 
@@ -116,7 +115,6 @@ class Game:
 
 
     def change_colour(self, colour):
-        # print(colour)
         self.colour_r, self.colour_g, self.colour_b = self.colour       
         if self.colour_r < colour[0]:
             self.colour_r += 1
@@ -180,7 +178,6 @@ class Game:
 
     def draw(self):
         print(self.score)
-        # print(self.colour, self.score)        
         self.screen.fill(self.change_colour(self.colour))
         self.moving_up()            
                                 

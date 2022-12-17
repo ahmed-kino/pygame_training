@@ -1,5 +1,4 @@
 from random import choice
-from sys import stdout
 
 from settings import *
 import pygame as pg
